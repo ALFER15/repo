@@ -1,108 +1,84 @@
 <div>
     @if ($mCreate)
-        <div class="bg-gray-800 bg-opacity-25 fixed inset-0">
-            <div class="py-12">
-                <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-                    <div class="bg-white shadow rounded-lg p-6">
-                        <form class="max-w-sm mx-auto" wire:submit='enviar'>
-                            <div class="mb-4"><span>Crear nueva categoria:</span></div>
-                            <div class="mb-4">
-                                <x-label for="name" value="Nombre de la categoría" class="w-full" />
-                                <x-input name="name" wire:model='name' class="w-full" />
-                                <x-input-error for='name' />
-                            </div>
-                            <div class="mb-4">
-                                <x-label for="description" value="Nombre de la descripción" class="w-full" />
-                                <x-input name="description" wire:model='description' class="w-full" /><br>
-                                <x-input-error for='description' />
-                            </div>
-                            <x-button class="mt-2">Guardar</x-button>
-                            <x-border-button class="mt-2"
-                                wire:click="set('mCreate', false)">Cancelar</x-border-button>
-                        </form>
-                    </div>
+    <div class="bg-gray-800 bg-opacity-25 fixed inset-0">
+        <div class="py-12">
+            
+            <form wire:submit='enviar'>
+                <div class="mb-4 text-center font-bold text-lg"><span>Crear nueva categoría</span></div>
+                <div class="mb-4">
+                    <x-label for="name" value="Nombre de la Categoria" />
+                    <x-input type="text" wire:model='name' class="w-full mt-2" placeholder="Nombre de la Categoría" />
                 </div>
-            </div>
+                <div class="mb-4">
+                    <x-label for="description" value="Descripción de la categoría" />
+                    <x-input type="text" wire:model='description' class="w-full mt-2" placeholder="Descripción de la Categoría" /><br>
+                </div>
+                <x-button class="mt-2">Guardar</x-button>
+                <x-border-button class="border-red-500 text-red-500 hover:bg-red-500 mt-2" wire:click='formCancel'>Cancelar</x-border-button>
+            </form>
         </div>
+    </div>
     @endif
 
-    <div class=" m-4">
-        <div class="m-4 flex justify-end">
-            <x-input name="search-category" placeholder="Busqueda" wire:model.live='searchCat' />
-            <x-button class="ml-4" wire:click='creaCategoryState'>
-                AGREGAR CATEGORÍA
-            </x-button>
-        </div>
-        <table
-            class="min-w-full table-fixed border-collapse border border-gray-300 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                    <th scope="col" class="px-6 py-3">
-                        ID
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Nombre
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Descripción
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Fecha Creación
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-center">
-                        Acciones
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($categories as $category)
-                    <tr class="bg-white dark:bg-gray-800" wire:key="{{ $category->id }}">
-                        <th scope="row"
-                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $category->id }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{ $category->name }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $category->description }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ $category->created_at }}
-                        </td>
-                        <td class="px-6 py-4 h-30 flex justify-center items-center space-x-2">
-                            <x-border-button class="border border-green-600" wire:click='editar({{ $category->id }})'>
-                                Editar
-                            </x-border-button>
-                            <x-danger-button wire:click='eliminar({{ $category }})'>
-                                Eliminar
-                            </x-danger-button>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-            {{-- Contenido --}}
-        </table>
-        <div class="mt4">
-            {{ $categories->links() }}
+    <div class="m-4">
+        <div class="flex justify-end items-center space-x-4">
+            <x-input name="search-category" placeholder="Buscar categoría" wire:model.live="searchCat" />
+            <x-button wire:click="$set('mCreate', true)">Agregar categoría</x-button>
         </div>
     </div>
 
+    {{--inicio--}}
+    <table class="min-w-full table-fixed border-collapse border border-gray-300 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">ID</th>
+                <th scope="col" class="px-6 py-3">Nombre</th>
+                <th scope="col" class="px-6 py-3">Descripción</th>
+                <th scope="col" class="px-6 py-3">Fecha de Creación</th>
+                <th scope="col" class="px-6 py-3">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($categories as $category)
+            <tr class="bg-white border-b dark:bg-gray-800" wire:key="{{ $category->id }}">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray-200">
+                    {{ $category->id }}
+                </th>
+                <td class="px-6 py-4 text-gray-900 dark:text-gray-200">{{ $category->name }}</td>
+                <td class="px-6 py-4 text-gray-900 dark:text-gray-200">{{ $category->description }}</td>
+                <td class="px-6 py-4 text-gray-900 dark:text-gray-200">{{ $category->created_at }}</td>
+                <td class="px-6 py-4 flex justify-center items-center space-x-2">
+                    <x-border-button wire:click='editar({{ $category->id }})'>Editar</x-border-button>
+                    <x-danger-button wire:click='delete({{ $category->id }})'>Eliminar</x-danger-button>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    <div class="m-2">
+        {{$categories->links()}}
+    </div>
+    {{--fin--}}
+
     @if ($mEdit)
-        <div class="bg-gray-800 bg-opacity-25 fixed inset-0">
-            <div class="py-12">
-                <div class="bg-white shadow rounded-lg p-6">
-                    <form class="max-w-lg mx-auto" wire:submit='update'>
-                        <div class="mb-4"><span>Editar categoria:</span></div>
-                        <x-label class="w-full " for="name" value="Nombre de la categoría" />
-                        <x-input class="w-full " name="name" wire:model='categoryEdit.name' />
-                        <x-label class="w-full " for="description" value="Nombre de la descripción" />
-                        <x-input class="w-full " name="description" wire:model='categoryEdit.description' /><br>
-                        <x-danger-button class="mt-2" wire:click="set('mEdit', false)">Cancelar</x-danger-button>
-                        <x-button class="mt-2">Actualizar</x-button>
-                    </form>
+    <div class="bg-gray-800 bg-opacity-25 fixed inset-0 flex justify-center items-center z-50">
+        <div class="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto">
+            <form wire:submit='update'>
+                <div class="mb-4 text-center font-bold text-lg"><span>Editar categoría</span></div>
+                <div class="mb-4">
+                    <x-label for="name" value="Nombre de la categoría" />
+                    <x-input type="text" wire:model='categoryEdit.name' class="w-full mt-2" placeholder="Nombre de la Categoría" />
                 </div>
-            </div>
+                <div class="mb-4">
+                    <x-label for="description" value="Descripción de la categoría" />
+                    <x-input type="text" wire:model='categoryEdit.description' class="w-full mt-2" placeholder="Descripción de la Categoría" /><br>
+                </div>
+                <div class="flex space-x-4 mt-4">
+                    <x-danger-button wire:click="$set('mEdit', false)">Cancelar</x-danger-button>
+                    <x-button>Actualizar</x-button>
+                </div>
+            </form>
         </div>
+    </div>
     @endif
 </div>
