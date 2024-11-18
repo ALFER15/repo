@@ -18,7 +18,7 @@ Route::middleware([
          return view('dashboard');
      })->name('dashboard');
 
-     Route::get('/brand', function () {
+     Route::get('/branch', function () {
          return view('brand');
      })->name('brand');
 
