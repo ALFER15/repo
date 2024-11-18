@@ -4,6 +4,11 @@
         <x-button wire:click="abrirModalCrear">Crear Producto</x-button>
     </div>
 
+    <!-- Barra de búsqueda -->
+    <div class="mb-4 flex justify-end">
+        <x-input name="search" placeholder="Buscar producto..." wire:model.live="search" class="w-full max-w-sm" />
+    </div>
+
     <!-- Modal de Creación de Producto -->
     @if ($pCreate)
         <div class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
@@ -182,5 +187,9 @@
                 @endforelse
             </tbody>
         </table>
+        <!-- Paginación -->
+        <div class="mt-4">
+            {{ $products->links() }}
+        </div>
     </div>
 </div>

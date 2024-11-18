@@ -6,9 +6,12 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class CreateProduct extends Component
 {
+    use WithPagination;
+
     public $pCreate = false; // Modal de creación oculto
     public $pEdit = false;   // Modal de edición oculto
     public $editId = null;   // ID del producto a editar
@@ -32,10 +35,13 @@ class CreateProduct extends Component
     {
         // Filtrar productos según la búsqueda
         $products = Product::with('category', 'supplier')
-            ->where('name', 'like', '%' . $this->search . '%')
-            ->orWhere('status', 'like', '%' . $this->search . '%')
-            ->orWhere('stock', 'like', '%' . $this->search . '%')
-            ->get();
+            ->where(function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('status', 'like', '%' . $this->search . '%')
+                      ->orWhere('stock', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy('id', 'desc') // Ordenar por ID de manera descendente
+            ->paginate(10);
 
         return view('livewire.productos.create-product', compact('products'));
     }
