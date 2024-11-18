@@ -7,87 +7,95 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 class CreateCategory extends Component
-{    
+{
+
+    //Para que la paginación la controle livewire sin que se refresque la pagina, solo el componente
     use WithPagination;
 
+    //Modelo del buscador
+    public $searchCat;
+
+    //public $categories;
     public $name;
     public $description;
-    
-    public $mEdit = false;
-    public $mCreate = false;
 
-    public $searchCat = '';
+    public $mCreate = false;
+    public $mEdit = false;
 
     public $idEditable;
     public $categoryEdit = [
         'id' => '',
         'name' => '',
-        'description'=>''];
+        'description' =>''
+    ];
+
+    // Resetea la página al cambiar el campo de búsqueda
+    public function updated($propertyName)
+    {
+        // Verifica si el campo actualizado es 'search' y resetea la paginación
+        if ($propertyName === 'searchCat') {
+            $this->resetPage();
+        }
+    }
 
     public function mount (){
-       /* $this -> name = $categories->name;
-        $this -> description = $categories->description;
-        //dd($cat); //SIRVE PARA DEBUGEAR LA INFORMACIÓN DE LA VARIABLE PERO NO GUARDA LA INFORMACIÓN, FUNCIONA COMO EL CONSOLE LOG DE JS*/
-        //$this -> categories = Category::all();
+        //$this->categories = Category::all();
+    }
 
-    }//EJECUTA ALGUNAS COSAS ANTES DE RENDERIZAR
-    
-    public function render() 
+    public function render()
     {
-        //$this -> categories = Category::all();
-        $categories = Category::where('name', 'like', '%'.$this->searchCat.'%')->
-        orwhere('description', 'like', '%'.$this->searchCat.'%')
-        ->orderBy('id','desc')->paginate(5);
+        //$this->categories = Category::all();
+        //se agregan los datos de la categoria paginados
+        $categories = Category::where('name', 'like', '%'.$this->searchCat.'%')
+        ->orWhere('description', 'like', '%'.$this->searchCat.'%')
+        ->orderBy('id', 'desc')->paginate(5);
         return view('livewire.catalogo.create-category', compact('categories'));
-    }//RENDERIZA LA VISTA COMPLETA PARA PODER REDIBUJAR LOS COMPONENTES DE LA PÁGINA
+    }
+
+    public function creaCategoryState(){
+        $this->mCreate = true;
+    }
 
     public function enviar(){
-       /* $cat = Category::find($this->title);
-        $this -> name = $cat->name;
-        $this -> description = $cat->description;*/
+        $this->validate([
+            'name' => 'required',
+            'description' => 'required'
+        ]);
         $category = new Category();
         $category->name = $this->name;
         $category->description = $this->description;
         $category->save();
-        $this -> reset(['name', 'description', 'mCreate']);
+        //Para que se resetee la paginación del componente cuando se agrega una nueva
+        $this->resetPage();
+
+        $this->reset(['name', 'description']);
     }
+
     public function editar($categoryID){
         $this->mEdit = true;
         $categoryEditable = Category::find($categoryID);
         $this->idEditable = $categoryEditable->id;
         $this->categoryEdit['name'] = $categoryEditable->name;
-        $this->categoryEdit['description'] = $categoryEditable->description;}
+        $this->categoryEdit['description'] = $categoryEditable->description;
 
-        public function update(){
-            $category=Category::find($this->idEditable);
-            $category->update([
-                'name'=> $this->categoryEdit['name'],
-                'description'=> $this->categoryEdit['description'],
+    }
 
-            ]);
-            $this->reset([
-                'categoryEdit',
-                'idEditable',
-                'mEdit'
+    public function update(){
+        $category = Category::find($this->idEditable);
+        $category->update([
+            'name' => $this->categoryEdit['name'],
+            'description' => $this->categoryEdit['description'],
+        ]);
 
-            ]);
+        $this->reset([
+            'categoryEdit',
+            'idEditable',
+            'mEdit'
+        ]);
 
-        }
+    }
 
-        public function formCancel(){
-            $this->reset([
-                'mCreate',
-                'name',
-                'description'
-            ]);
-        }
-        
-        public function updated($propertyName)
-        {
-            if ($propertyName === 'searchCat') {
-                $this->resetPage();}
-            }
-    
-        public function delete(Category $category){
-        $category -> delete();}
+    public function eliminar(Category $category){
+        $category->delete();
+    }
 }
