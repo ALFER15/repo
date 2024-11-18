@@ -1,7 +1,7 @@
 <div>
     <!-- Botón para abrir el formulario de creación -->
     <div class="flex justify-end mb-4">
-        <x-button wire:click="$set('pCreate', true)">Crear Producto</x-button>
+        <x-button wire:click="abrirModalCrear">Crear Producto</x-button>
     </div>
 
     <!-- Modal de Creación de Producto -->
@@ -65,7 +65,7 @@
                         </select>
                     </div>
                     <div class="flex justify-between">
-                        <x-border-button wire:click="$set('pCreate', false)" class="bg-red-500 text-white px-4 py-2 rounded-md">Cancelar</x-border-button>
+                        <x-border-button wire:click="cerrarModalCrear" class="bg-red-500 text-white px-4 py-2 rounded-md">Cancelar</x-border-button>
                         <x-button class="bg-blue-500 text-white px-4 py-2 rounded-md">Guardar</x-button>
                     </div>
                 </form>
@@ -79,6 +79,7 @@
             <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
                 <form wire:submit.prevent="update">
                     <h2 class="text-lg font-bold text-gray-700 mb-4">Editar Producto</h2>
+                    <!-- Campos del formulario de edición -->
                     <div class="mb-4">
                         <x-label for="name" value="Nombre del Producto" />
                         <x-input name="name" wire:model="name" class="w-full mt-1" />

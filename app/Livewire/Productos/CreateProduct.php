@@ -40,6 +40,24 @@ class CreateProduct extends Component
         return view('livewire.productos.create-product', compact('products'));
     }
 
+    public function abrirModalCrear()
+    {
+        $this->resetForm(); // Limpia el formulario antes de abrirlo
+        $this->pCreate = true;
+    }
+
+    public function cerrarModalCrear()
+    {
+        $this->resetForm(); // Limpia el formulario al cerrarlo
+        $this->pCreate = false;
+    }
+
+    public function resetForm()
+    {
+        // Limpia las propiedades del formulario de creación
+        $this->reset(['name', 'stock', 'store_price', 'public_price', 'expiration', 'assortment', 'status', 'category_id', 'supplier_id']);
+    }
+
     public function enviar()
     {
         // Validar los datos antes de guardar
@@ -70,20 +88,8 @@ class CreateProduct extends Component
 
         session()->flash('success', 'Producto creado exitosamente.');
 
-        // Resetea las propiedades y cierra el modal
-        $this->reset(['name', 'stock', 'store_price', 'public_price', 'expiration', 'assortment', 'status', 'category_id', 'supplier_id', 'pCreate']);
-    }
-
-    public function eliminar($id)
-    {
-        $product = Product::find($id);
-
-        if ($product) {
-            $product->delete();
-            session()->flash('success', 'Producto eliminado exitosamente.');
-        } else {
-            session()->flash('error', 'Producto no encontrado.');
-        }
+        // Cierra el modal después de crear y limpia el formulario
+        $this->cerrarModalCrear();
     }
 
     public function editar($id)
@@ -126,6 +132,18 @@ class CreateProduct extends Component
 
             // Resetea las propiedades y cierra el modal
             $this->reset(['editId', 'name', 'stock', 'store_price', 'public_price', 'expiration', 'assortment', 'status', 'pEdit', 'category_id', 'supplier_id']);
+        }
+    }
+
+    public function eliminar($id)
+    {
+        $product = Product::find($id);
+
+        if ($product) {
+            $product->delete();
+            session()->flash('success', 'Producto eliminado exitosamente.');
+        } else {
+            session()->flash('error', 'Producto no encontrado.');
         }
     }
 }
