@@ -30,5 +30,6 @@ Route::middleware([
          return view('product');
      })->name('products');
     //Route::get('/dashboard', CreateCategory::class)->name('dashboard');
+
 });
 
